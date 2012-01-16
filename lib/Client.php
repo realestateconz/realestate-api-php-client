@@ -75,6 +75,7 @@ class RealestateCoNz_Client
      * Set the api version
      * 
      * @param string $version 
+     * @throws Exception if the version is not supported by this client
      */
     private function setVersion($version)
     {
@@ -87,10 +88,10 @@ class RealestateCoNz_Client
     
     
     /**
-     * Create 
+     * Create a signature from request
      * 
      * @param string $path
-     * @param array $get_params
+     * @param array $query_params
      * @param array $post_params
      * @return string
      */

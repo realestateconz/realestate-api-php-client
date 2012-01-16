@@ -26,7 +26,8 @@ class RealestateCoNz_ClientTest extends PHPUnit_Framework_TestCase
         
         $client = new RealestateCoNz_Client($private_key, $public_key, 1);
         
-        
         $this->assertEquals('657AE8F0CABA9CBD6BC0C8A4B9F55AA2', $client->createSignature('/test/', array('foo' => 'bar')));
+        
+        $this->assertEquals('05BDA2578669706001612CB9E2FD3E84', $client->createSignature('/test/', array('foo' => 'bar'), array('var2' => 'value', 'var1' => 'value')));
     }
 }
