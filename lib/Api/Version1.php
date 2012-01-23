@@ -17,7 +17,7 @@
  */
 
 
-class RealestateCoNz_Api_Version1 extends RealestateCoNz_Api
+class RealestateCoNz_Api_Version1 extends RealestateCoNz_Api_Abstract
 {
     
 }

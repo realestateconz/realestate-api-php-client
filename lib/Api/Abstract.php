@@ -16,7 +16,7 @@
  * under the License.
  */
 
-abstract class RealestateCoNz_Api
+abstract class RealestateCoNz_Api_Abstract
 {
        
     
