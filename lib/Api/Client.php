@@ -16,7 +16,7 @@
  * under the License.
  */
 
-class RealestateCoNz_Client
+class RealestateCoNz_Api_Client
 {
     /**
      *
@@ -50,7 +50,7 @@ class RealestateCoNz_Client
     
     /**
      *
-     * @var RealestateCoNz_Encoder
+     * @var RealestateCoNz_Api_Encoder
      */
     protected $encoder;
     
@@ -113,6 +113,11 @@ class RealestateCoNz_Client
         return $api_method;
     }
     
+    /**
+     *
+     * @param string $api_method
+     * @return string 
+     */
     public function buildPath($api_method)
     {
         $path = $this->normaliseApiMethod($api_method);
@@ -122,12 +127,17 @@ class RealestateCoNz_Client
         return $path;
     }
     
+    /**
+     * Get signature encoder
+     * 
+     * @return RealestateCoNz_Api_Encoder
+     */
     protected function getEncoder()
     {
         if(!isset($this->encoder)) {
             switch($this->version) {
                 case 1:
-                    $this->encoder = new RealestateCoNz_Encoder_Version1($this->private_key, $this->public_key);
+                    $this->encoder = new RealestateCoNz_Api_Encoder_Version1($this->private_key, $this->public_key);
                     break;
                 default:
                     throw new Exception('Api version not supported: ' . $version);

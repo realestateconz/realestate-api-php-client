@@ -17,7 +17,7 @@
  */
 
 
-class RealestateCoNz_Encoder_Version1Test extends PHPUnit_Framework_TestCase
+class RealestateCoNz_Api_Encoder_Version1Test extends PHPUnit_Framework_TestCase
 {
     
     
@@ -26,14 +26,13 @@ class RealestateCoNz_Encoder_Version1Test extends PHPUnit_Framework_TestCase
         $private_key = 'aaaaaaaaaaaaaaaaaaaaaaa';
         $public_key  = 'bbbbbbbbbbbbbbbbbbbbbbb';
         
-        $encoder = new RealestateCoNz_Encoder_Version1($private_key, $public_key);
+        $encoder = new RealestateCoNz_Api_Encoder_Version1($private_key, $public_key);
         
         $this->assertEquals('EB4436826BF6334F347E3CDFA8BF1156', $encoder->createSignature('/1/listings/93077/agent-enquiry/', array(), array('email' => 'test@example.com', 'phone' => '0000000000000', 'text' => 'aaaa aaaaaaaaaaa', 'name' => 'test')));
         
         $this->assertEquals('657AE8F0CABA9CBD6BC0C8A4B9F55AA2', $encoder->createSignature('/1/test/', array('foo' => 'bar')));
         
+        // POST request variables
         $this->assertEquals('D72337EEEA85948607196DE381FABD42', $encoder->createSignature('/1/test/', array('foo' => 'bar'), array('test' => 'test1')));
-        
-        
     }
 }

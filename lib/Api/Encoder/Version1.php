@@ -16,7 +16,7 @@
  * under the License.
  */
 
-class RealestateCoNz_Encoder_Version1 extends RealestateCoNz_Encoder
+class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
 {
     
     public function createSignature($path, $query_params = array(), $post_params = array())

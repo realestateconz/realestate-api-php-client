@@ -36,7 +36,7 @@ class RealestateCoNz_Autoloader
      */
     static public function autoload($class)
     {
-        if (0 !== strpos($class, 'RealestateCoNz')) {
+        if (0 !== strpos($class, 'RealestateCoNz_Api')) {
             return;
         }
         

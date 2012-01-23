@@ -16,18 +16,18 @@
  * under the License.
  */
 
-abstract class RealestateCoNz_Encoder
+class RealestateCoNz_Api_ClientTest extends PHPUnit_Framework_TestCase
 {
-    protected $private_key;
     
-    protected $public_key;
-    
-    public function __construct($private_key, $public_key)
+    public function testCreateSignature()
     {
-        $this->private_key = strtolower($private_key);
-        $this->public_key = strtolower($public_key);
+        $private_key = 'aaaaaaaaaaaaaaaaaaaaaaa';
+        $public_key  = 'bbbbbbbbbbbbbbbbbbbbbbb';
+        
+        $client = new RealestateCoNz_Api_Client($private_key, $public_key, 1);
+        
+        $this->assertEquals('657AE8F0CABA9CBD6BC0C8A4B9F55AA2', $client->createSignature('/test/', array('foo' => 'bar')));
+        
+        $this->assertEquals('05BDA2578669706001612CB9E2FD3E84', $client->createSignature('/test/', array('foo' => 'bar'), array('var2' => 'value', 'var1' => 'value')));
     }
-    
-    abstract public function createSignature($path, $query_params = array(), $post_params = array());
-    
 }
