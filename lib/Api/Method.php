@@ -2,12 +2,12 @@
 
 class RealestateCoNz_Api_Method
 {
-    protected $get_params;
+    protected $query_params;
     protected $post_params;
 
-    public function setGetParams($params)
+    public function setQueryParams($params)
     {
-        $this->get_params($params);
+        $this->query_params($params);
     }
 
     public function setPostParams($params)
