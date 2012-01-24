@@ -163,5 +163,24 @@ class RealestateCoNz_Api_Client
 
         $url .= '?' . http_build_query($query_params);
 
+        $ch = curl_init();
+
+        /* Set default cURL options */
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0); 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 100);
+
+        if ($method->getPostParams())
+        {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $method->getPostParams());
+            curl_setopt($ch, CURLOPT_POST, true);
+        }
+
+        $result = curl_exec($ch);
+
+        curl_close($ch);
+
+        return json_decode($result, true);
     }    
 }
