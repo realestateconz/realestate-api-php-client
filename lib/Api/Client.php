@@ -148,5 +148,8 @@ class RealestateCoNz_Api_Client
     }
     
     
-    
+    public function sendRequest($object)
+    {
+        
+    }    
 }
