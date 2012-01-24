@@ -148,8 +148,10 @@ class RealestateCoNz_Api_Client
     }
     
     
-    public function sendRequest($object)
+    public function sendRequest($method)
     {
-        
+        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams());
+
+        print $api_signature;
     }    
 }
