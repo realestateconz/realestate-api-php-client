@@ -152,6 +152,16 @@ class RealestateCoNz_Api_Client
     {
         $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams());
 
-        print $api_signature;
+        $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
+
+        $query_params = array(
+                                'api_key' => $this->public_key,
+                                'api_sig' => $api_signature,
+        );
+
+        $query_params = array_merge($query_params, $method->getQueryParams());
+
+        $url .= '?' . http_build_query($query_params);
+
     }    
 }
