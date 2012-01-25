@@ -159,7 +159,10 @@ class RealestateCoNz_Api_Client
                                 'api_sig' => $api_signature,
         );
 
-        $query_params = array_merge($query_params, $method->getQueryParams());
+        if (is_array($method->getQueryParams()) && count($method->getQueryParams()))
+        {
+            $query_params = array_merge($query_params, $method->getQueryParams());
+        }
 
         $url .= '?' . http_build_query($query_params);
 
