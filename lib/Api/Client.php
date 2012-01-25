@@ -53,7 +53,12 @@ class RealestateCoNz_Api_Client
      * @var RealestateCoNz_Api_Encoder
      */
     protected $encoder;
-    
+   
+    /**
+     *
+     * @var array
+     */
+    protected $request_info; 
     
     /**
      *
@@ -176,11 +181,13 @@ class RealestateCoNz_Api_Client
 
         if ($method->getPostParams())
         {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $method->getPostParams());
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($method->getPostParams()));
             curl_setopt($ch, CURLOPT_POST, true);
         }
 
         $result = curl_exec($ch);
+
+        $this->request_info = curl_getinfo($ch);
 
         curl_close($ch);
 
