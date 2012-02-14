@@ -33,6 +33,32 @@ class RealestateCoNz_Api_Method_Agent_Post extends RealestateCoNz_Api_Method
         'Content-Type' => 'application/json'
     );
     
+    /**
+     *
+     * @var string
+     */
+    protected $data;
+    
+    /**
+     *
+     * @param string $data
+     */
+    public function __construct($data = null)
+    {
+        if(null !== $data) {
+            $this->setData($data);
+        }
+    }
+    
+    /**
+     *
+     * @param string $data 
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+        $this->setRawData($data);
+    }
     
     /**
      *

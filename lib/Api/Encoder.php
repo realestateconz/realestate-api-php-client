@@ -41,6 +41,14 @@ abstract class RealestateCoNz_Api_Encoder
         $this->public_key = strtolower($public_key);
     }
     
-    abstract public function createSignature($path, $query_params = array(), $post_params = array());
+    /**
+     *
+     * @param string $path
+     * @param array $query_params
+     * @param array $post_params
+     * @param string $raw_data
+     * @return string
+     */
+    abstract public function createSignature($path, array $query_params = array(), array $post_params = null, $raw_data = null);
     
 }

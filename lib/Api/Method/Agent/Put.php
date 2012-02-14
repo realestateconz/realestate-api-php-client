@@ -38,15 +38,34 @@ class RealestateCoNz_Api_Method_Agent_Put extends RealestateCoNz_Api_Method
      * @var int
      */
     protected $id;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $data;
         
     /**
      *
      * @param int $id 
      */
-    public function __construct($id)
+    public function __construct($id, $data = null)
     {
         $this->id = $id;
-
+        
+        if(null !== $data) {
+            $this->setData($data);
+        }
+    }
+    
+    /**
+     *
+     * @param string $data 
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+        $this->setRawData($data);
     }
     
     /**
@@ -55,7 +74,7 @@ class RealestateCoNz_Api_Method_Agent_Put extends RealestateCoNz_Api_Method
      */
     public function getUrl()
     {
-        return '/agents/';
+        return '/agents/' . $this->id . '/';
     }
 }
 

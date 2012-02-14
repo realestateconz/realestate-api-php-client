@@ -34,5 +34,12 @@ class RealestateCoNz_Api_Encoder_Version1Test extends PHPUnit_Framework_TestCase
         
         // POST request variables
         $this->assertEquals('D72337EEEA85948607196DE381FABD42', $encoder->createSignature('/1/test/', array('foo' => 'bar'), array('test' => 'test1')));
+        
+        // POST with raw data
+        $this->assertEquals('767B3B2FA186155BA6A4BA600EF9291D', $encoder->createSignature('/1/test/', array('foo' => 'bar'), null, '{"test": "value"}'));
+        
+        
+        // POST with raw data that contains \r & \n
+        $this->assertEquals('B0D602749D660B544CC56FF768A8A816', $encoder->createSignature('/1/test/', array('foo' => 'bar'), null, "{\"test\": \"value\", \r\n \"test2\": \"value\"}"));
     }
 }

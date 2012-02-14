@@ -19,6 +19,28 @@
 class RealestateCoNz_Api_Method_Agent_Search extends RealestateCoNz_Api_Method 
 {
 
+    protected $filters;
+    
+    /**
+     *
+     * @param array $filters 
+     */
+    public function __construct(array $filters = null)
+    {
+        if(null !== $filters) {
+            $this->setFilters($filters);
+        }
+        
+    }
+    
+    /**
+     *
+     * @param array $filters 
+     */
+    public function setFilters(array $filters)
+    {
+        $this->filters = $filters;
+    }
     
     /**
      *

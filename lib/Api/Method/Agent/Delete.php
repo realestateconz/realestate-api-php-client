@@ -47,7 +47,7 @@ class RealestateCoNz_Api_Method_Agent_Delete extends RealestateCoNz_Api_Method
      */
     public function getUrl()
     {
-        return '/agents/';
+        return '/agents/' . $this->id . '/';
     }
 }
 

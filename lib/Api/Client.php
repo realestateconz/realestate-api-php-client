@@ -52,13 +52,19 @@ class RealestateCoNz_Api_Client
      *
      * @var RealestateCoNz_Api_Encoder
      */
-    protected $encoder;
-   
+    protected $encoder;   
+    
     /**
      *
      * @var array
      */
-    protected $request_info; 
+    protected $last_response; 
+    
+    /**
+     *
+     * @var array
+     */
+    protected $last_request; 
     
     /**
      *
@@ -98,11 +104,12 @@ class RealestateCoNz_Api_Client
      * @param string $path
      * @param array $query_params
      * @param array $post_params
+     * @param string $raw_data
      * @return string
      */
-    public function createSignature($api_method, $query_params = array(), $post_params = array())
+    public function createSignature($api_method, $query_params = array(), $post_params = null, $raw_data = null)
     {
-        return $this->getEncoder()->createSignature($this->buildPath($api_method), $query_params, $post_params);
+        return $this->getEncoder()->createSignature($this->buildPath($api_method), $query_params, $post_params, $raw_data);
     }
     
     public function normaliseApiMethod($api_method)
@@ -153,9 +160,14 @@ class RealestateCoNz_Api_Client
     }
     
     
-    public function sendRequest($method)
+    /**
+     *
+     * @param RealestateCoNz_Api_Method $method
+     * @return mixed
+     */
+    public function sendRequest(RealestateCoNz_Api_Method $method)
     {
-        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams());
+        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $this->getRawData());
 
         $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
 
@@ -169,7 +181,7 @@ class RealestateCoNz_Api_Client
             $query_params = array_merge($query_params, $method->getQueryParams());
         }
 
-        $url .= '?' . http_build_query($query_params);
+        $url .= '?' . http_build_query($query_params, null, '&');
 
         $ch = curl_init();
 
@@ -179,18 +191,35 @@ class RealestateCoNz_Api_Client
         curl_setopt($ch, CURLOPT_HEADER, 0); 
         curl_setopt($ch, CURLOPT_TIMEOUT, 100);
 
-        if ($method->getPostParams())
-        {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($method->getPostParams()));
+        if($method->getHttpMethod() === 'POST' || $method->getHttpMethod() === 'PUT') {
             curl_setopt($ch, CURLOPT_POST, true);
+            
+            if($method->getPostParams()) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($method->getPostParams()));
+            } elseif(null !== $method->getRawData()) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $method->getRawData());
+            }
         }
+        
 
         $result = curl_exec($ch);
 
-        $this->request_info = curl_getinfo($ch);
+        $this->last_response = curl_getinfo($ch);
+        
+        $this->last_response['content'] = $result;
 
         curl_close($ch);
 
         return json_decode($result, true);
-    }    
+    }
+    
+    
+    /**
+     *
+     * @return array
+     */
+    public function getLastResponse()
+    {
+        return $this->last_response;
+    }
 }

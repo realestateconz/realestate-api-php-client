@@ -30,4 +30,9 @@ class RealestateCoNz_Api_ClientTest extends PHPUnit_Framework_TestCase
         
         $this->assertEquals('05BDA2578669706001612CB9E2FD3E84', $client->createSignature('/test/', array('foo' => 'bar'), array('var2' => 'value', 'var1' => 'value')));
     }
+    
+    public function testSendRequest()
+    {
+        
+    }
 }

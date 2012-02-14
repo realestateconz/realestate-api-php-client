@@ -19,7 +19,15 @@
 class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
 {
     
-    public function createSignature($path, $query_params = array(), $post_params = array())
+    /**
+     *
+     * @param string $path
+     * @param array $query_params
+     * @param array $post_params
+     * @param string $raw_data
+     * @return string
+     */
+    public function createSignature($path, array $query_params = array(), array $post_params = null, $raw_data = null)
     {
         $api_signature_parts = array();
 
@@ -76,7 +84,12 @@ class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
             $api_signature_parts[] = $post_content;
         }
         
-
+        // raw data
+        if(null !== $raw_data) {
+            // replace all \r's & \n's to ensure cross platform compatibility
+            $api_signature_parts[] = str_replace(array("\n", "\r"), array('', ''), $raw_data);
+        }
+        
         $api_signature_encoded = md5(implode('', $api_signature_parts));
         
         $api_signature_encoded = strtoupper($api_signature_encoded);
