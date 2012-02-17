@@ -290,6 +290,6 @@ class RealestateCoNz_Api_Client
      */
     public function getLastRequest()
     {
-        return $this->last_response;
+        return $this->last_request;
     }
 }
