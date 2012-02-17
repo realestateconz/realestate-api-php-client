@@ -17,10 +17,12 @@
  */
 
 abstract class RealestateCoNz_Api_Method
-{
-    protected $allowed_query_params = array();
-    
-    protected $query_params;
+{    
+    /**
+     *
+     * @var array
+     */
+    protected $query_params = array();
     
     protected $post_params;
     
@@ -42,6 +44,11 @@ abstract class RealestateCoNz_Api_Method
      */
     protected $http_headers = array();
     
+    /**
+     *
+     * @var string
+     */
+    protected $http_enc_type;
     
     /**
      *
@@ -60,12 +67,21 @@ abstract class RealestateCoNz_Api_Method
     {
         return $this->raw_data;
     }
+    
+    /**
+     *
+     * @return string
+     */
+    public function getHttpEncType()
+    {
+        return $this->http_enc_type;
+    }
 
     /**
      *
      * @param array $params 
      */
-    public function setQueryParams($params)
+    public function setQueryParams(array $params)
     {        
         $this->query_params = $params;
     }
@@ -124,6 +140,14 @@ abstract class RealestateCoNz_Api_Method
     public function preExecute()
     {
         
+    }
+    
+    /**
+     * @private
+     */
+    public function parseResponse($response_body, $client)
+    {
+        return json_decode($response_body, true);
     }
 }
 

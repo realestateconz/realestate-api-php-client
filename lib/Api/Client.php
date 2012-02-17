@@ -68,6 +68,26 @@ class RealestateCoNz_Api_Client
     
     /**
      *
+     * @var RealestateCoNz_Api_Http_Adapter_Interface
+     */
+    protected $http_adapter;
+    
+    
+    /**
+     * Configuration array, set using the constructor or using ::setConfig()
+     *
+     * @var array
+     */
+    protected $http_config = array(
+        'maxredirects'    => 5,
+        'useragent'       => 'Realestate.co.nz API Client',
+        'timeout'         => 100,
+        'adapter'         => 'RealestateCoNz_Api_Http_Adapter_Curl',
+        'keepalive'       => false,
+    );
+    
+    /**
+     *
      * @param string $private_key
      * @param string $public_key
      * @param string $version
@@ -81,6 +101,10 @@ class RealestateCoNz_Api_Client
         $this->server = $server;
     }
     
+    public function setHttpConfig($http_config)
+    {
+        $this->http_config = array_merge($this->http_config, $http_config);
+    }
     
     /**
      * Set the api version
@@ -161,14 +185,45 @@ class RealestateCoNz_Api_Client
     
     
     /**
+     * Get http adapter
+     *
+     * @return RealestateCoNz_Api_Http_Adapter_Interface $adapter
+     */
+    public function getHttpAdapter()
+    {
+        if (null === $this->http_adapter) {            
+            $adapterClass = $this->http_config['adapter'];
+            
+            if(!class_exists($adapterClass)) {
+                throw new RealestateCoNz_Api_Client_Exception('Adapter not found: ' . $adapterClass);
+            }
+            
+            $adapter = new $adapterClass();
+            
+            $config = $this->http_config;
+            unset($config['adapter']);
+            
+            $adapter->setConfig($config);
+            
+            $this->http_adapter = $adapter;
+        }
+
+        return $this->http_adapter;
+    }
+    
+    
+    /**
      *
      * @param RealestateCoNz_Api_Method $method
      * @return mixed
      */
     public function sendRequest(RealestateCoNz_Api_Method $method)
     {
-        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $this->getRawData());
+        $this->getHttpAdapter()->connect($this->server, 80);
+        
+        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $method->getRawData());
 
+        // buidl the url
         $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
 
         $query_params = array(
@@ -183,34 +238,40 @@ class RealestateCoNz_Api_Client
 
         $url .= '?' . http_build_query($query_params, null, '&');
 
-        $ch = curl_init();
-
-        /* Set default cURL options */
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0); 
-        curl_setopt($ch, CURLOPT_TIMEOUT, 100);
-
-        if($method->getHttpMethod() === 'POST' || $method->getHttpMethod() === 'PUT') {
-            curl_setopt($ch, CURLOPT_POST, true);
-            
+        // prepare body
+        $body = null;
+        if($method->getHttpMethod() === 'POST' || $method->getHttpMethod() === 'PUT') {            
             if($method->getPostParams()) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($method->getPostParams()));
+                $body = http_build_query($method->getPostParams(), null, '&');
             } elseif(null !== $method->getRawData()) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $method->getRawData());
+                $body = $method->getRawData();
             }
         }
         
+        // prepare headers
+        $headers = array();
 
-        $result = curl_exec($ch);
-
-        $this->last_response = curl_getinfo($ch);
+        // Set the connection header
+        if (!$this->http_config['keepalive']) {
+            $headers[] = "Connection: close";
+        }
         
-        $this->last_response['content'] = $result;
+        // Set the Content-Type header
+        if (($method->getHttpMethod() == 'POST' || $method->getHttpMethod() == 'PUT') && null !== $method->getHttpEncType()) {
+            $headers[] = self::CONTENT_TYPE . ': ' . $method->getHttpEncType();
+        }
 
-        curl_close($ch);
+        // Set the user agent header
+        if (isset($this->http_config['useragent'])) {
+            $headers[] = "User-Agent: {$this->http_config['useragent']}";
+        }
 
-        return json_decode($result, true);
+        
+        $this->last_request = $this->getHttpAdapter()->write($method->getHttpMethod(), $url, $headers, $body);
+
+        $this->last_response = $this->getHttpAdapter()->read();
+        
+        return $method->parseResponse($this->last_response, $this);
     }
     
     
@@ -219,6 +280,15 @@ class RealestateCoNz_Api_Client
      * @return array
      */
     public function getLastResponse()
+    {
+        return $this->last_response;
+    }
+    
+    /**
+     *
+     * @return array
+     */
+    public function getLastRequest()
     {
         return $this->last_response;
     }
