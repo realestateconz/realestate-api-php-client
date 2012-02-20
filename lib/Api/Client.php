@@ -262,10 +262,6 @@ class RealestateCoNz_Api_Client
             $headers[] = 'Content-Type: ' . $method->getHttpEncType();
             
         }
-        
-        if($method->getHttpMethod() == 'PUT') {
-            var_dump($method->getHttpEncType());
-        }
 
         // Set the user agent header
         if (isset($this->http_config['useragent'])) {
