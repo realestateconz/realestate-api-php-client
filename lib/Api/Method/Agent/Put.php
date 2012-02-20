@@ -27,14 +27,6 @@ class RealestateCoNz_Api_Method_Agent_Put extends RealestateCoNz_Api_Method
 
     /**
      *
-     * @var array
-     */
-    protected $http_headers = array(
-        'Content-Type' => 'application/json'
-    );
-    
-    /**
-     *
      * @var int
      */
     protected $id;
@@ -44,6 +36,12 @@ class RealestateCoNz_Api_Method_Agent_Put extends RealestateCoNz_Api_Method
      * @var string
      */
     protected $data;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $http_enc_type = 'application/json';
         
     /**
      *

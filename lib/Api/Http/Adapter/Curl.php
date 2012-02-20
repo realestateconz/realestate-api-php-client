@@ -101,6 +101,7 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
             case 'PUT':
                 $curlMethod = CURLOPT_CUSTOMREQUEST;
                 $curlValue = "PUT";
+                break;
 
             case 'DELETE':
                 $curlMethod = CURLOPT_CUSTOMREQUEST;
@@ -125,15 +126,19 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
         
         
+        // 
+        curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
+        
+        
+        
+        // set request body
         if(null !== $body) {
-            if ($method == 'POST') {
-                curl_setopt($this->curl, CURLOPT_POSTFIELDS, $body);
-            } elseif ($method == 'PUT') {
-                curl_setopt($this->curl, CURLOPT_POSTFIELDS, $body);
-            } elseif ($method == 'DELETE') {
+            if ($method == 'POST' || $method == 'PUT' || $method == 'DELETE') {
                 curl_setopt($this->curl, CURLOPT_POSTFIELDS, $body);
             }
         }
+        
+        
         
         
         // send the request

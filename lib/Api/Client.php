@@ -248,8 +248,9 @@ class RealestateCoNz_Api_Client
             }
         }
         
+        
         // prepare headers
-        $headers = array();
+        $headers = $method->getHttpHeaders();
 
         // Set the connection header
         if (!$this->http_config['keepalive']) {
@@ -257,15 +258,20 @@ class RealestateCoNz_Api_Client
         }
         
         // Set the Content-Type header
-        if (($method->getHttpMethod() == 'POST' || $method->getHttpMethod() == 'PUT') && null !== $method->getHttpEncType()) {
-            $headers[] = self::CONTENT_TYPE . ': ' . $method->getHttpEncType();
+        if (($method->getHttpMethod() == 'POST' || $method->getHttpMethod() == 'PUT') && (null !== $method->getHttpEncType())) {
+            $headers[] = 'Content-Type: ' . $method->getHttpEncType();
+            
+        }
+        
+        if($method->getHttpMethod() == 'PUT') {
+            var_dump($method->getHttpEncType());
         }
 
         // Set the user agent header
         if (isset($this->http_config['useragent'])) {
             $headers[] = "User-Agent: {$this->http_config['useragent']}";
         }
-
+        
         
         $this->last_request = $this->getHttpAdapter()->write($method->getHttpMethod(), $url, $headers, $body);
 
