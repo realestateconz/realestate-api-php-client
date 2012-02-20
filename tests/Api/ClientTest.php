@@ -63,6 +63,12 @@ class RealestateCoNz_Api_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('{"message" : "test mock response"}', $client->getLastResponse());
         
         $this->assertEquals(array('message' => 'test mock response'), $response);
+        
+        
+        $request = $client->getLastRequest();
+        
+        $this->assertEquals('http://api.realestate.co.nz/1/mock/?api_key=bbbbbbbbbbbbbbbbbbbbbbb&api_sig=A2E14A8368118341AD8DA765C13331C6', $request['uri']);
+        
     }
 }
 

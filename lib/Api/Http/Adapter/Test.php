@@ -19,7 +19,7 @@
 /**
  * Test adapter
  */
-class RealestateCoNz_Api_Http_Adapter_Test implements RealestateCoNz_Api_Http_Adapter_Interface
+class RealestateCoNz_Api_Http_Adapter_Test implements RealestateCoNz_Api_Http_Adapter
 {
     protected $config = array();
     
@@ -50,6 +50,8 @@ class RealestateCoNz_Api_Http_Adapter_Test implements RealestateCoNz_Api_Http_Ad
 
     /**
      * Send request to the remote server
+     * 
+     * This is a test adapter, it does not do any actual reqests.
      *
      * @param string        $method
      * @param string        $url
@@ -59,15 +61,23 @@ class RealestateCoNz_Api_Http_Adapter_Test implements RealestateCoNz_Api_Http_Ad
      */
     public function write($method, $url, $headers = array(), $body = null)
     {
-        $request = $method . ' ' . $url . "\n";
-        
+        $request_string = $method . ' ' . $url . "\n";
         foreach($headers as $header) {
-            $request .= $header . "\n";
+            $request_string .= $header . "\n";
         }
         
-        $request .= "\n\n";
+        $request_string .= "\n\n";
         
-        $request .= $body;
+        $request_string .= $body;
+        
+        
+        $request = array();
+        
+        $request['uri'] = $url;
+        $request['method'] = $method;
+        $request['headers'] = $headers;
+        $request['body'] = $body;        
+        $request['string'] = $request_string;
         
         return $request;
     }

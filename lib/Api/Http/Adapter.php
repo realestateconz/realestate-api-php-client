@@ -16,7 +16,7 @@
  * under the License.
  */
 
-interface RealestateCoNz_Api_Http_Adapter_Interface
+interface RealestateCoNz_Api_Http_Adapter
 {
     
     /**

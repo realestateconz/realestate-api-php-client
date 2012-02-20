@@ -19,7 +19,7 @@
 /**
  * Curl adapter
  */
-class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Adapter_Interface
+class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Adapter
 {
     
     protected $config = array();
@@ -141,13 +141,16 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
 
         $this->response = $response;
         
-        $request  = curl_getinfo($this->curl, CURLINFO_HEADER_OUT);
-        $request .= $body;
+        $request = array();
 
         if (empty($this->response)) {
             throw new RealestateCoNz_Api_Http_Adapter_Exception("Error in cURL request: " . curl_error($this->curl));
         }
 
+        $request['uri'] = $url;
+        $request['method'] = $method;
+        $request['headers'] = curl_getinfo($this->curl, CURLINFO_HEADER_OUT);
+        $request['body'] = $body;        
 
         return $request;
     }
