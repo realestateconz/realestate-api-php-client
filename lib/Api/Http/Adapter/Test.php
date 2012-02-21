@@ -89,7 +89,9 @@ class RealestateCoNz_Api_Http_Adapter_Test implements RealestateCoNz_Api_Http_Ad
      */
     public function read()
     {
-        return isset($this->config['mock_response']) ? $this->config['mock_response'] : null;
+        $response = new RealestateCoNz_Api_Http_Response(200, array(), isset($this->config['mock_response']) ? $this->config['mock_response'] : '');
+        
+        return $response;
     }
     
     

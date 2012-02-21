@@ -56,7 +56,7 @@ class RealestateCoNz_Api_Client
     
     /**
      *
-     * @var array
+     * @var RealestateCoNz_Api_Http_Response
      */
     protected $last_response; 
     
@@ -279,7 +279,7 @@ class RealestateCoNz_Api_Client
     
     /**
      *
-     * @return array
+     * @return RealestateCoNz_Api_Http_Response
      */
     public function getLastResponse()
     {

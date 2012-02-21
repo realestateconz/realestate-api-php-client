@@ -133,9 +133,7 @@ abstract class RealestateCoNz_Api_Method
     }
     
     
-
     abstract public function getUrl();
-    
     
     public function preExecute()
     {
@@ -143,11 +141,14 @@ abstract class RealestateCoNz_Api_Method
     }
     
     /**
-     * @private
+     *
+     * @param RealestateCoNz_Api_Http_Response $response
+     * @param RealestateCoNz_Api_Client $client
+     * @return mixed
      */
-    public function parseResponse($response_body, $client)
+    public function parseResponse(RealestateCoNz_Api_Http_Response $response, $client)
     {
-        return json_decode($response_body, true);
+        return json_decode($response->getBody(), true);
     }
 }
 

@@ -49,7 +49,7 @@ interface RealestateCoNz_Api_Http_Adapter
     /**
      * Read response from server
      *
-     * @return string
+     * @return RealestateCoNz_Api_Http_Response
      */
     public function read();
 

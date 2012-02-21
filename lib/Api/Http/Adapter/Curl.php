@@ -117,7 +117,7 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
         
         
         // don't return headers
-        curl_setopt($this->curl, CURLOPT_HEADER, false);
+        curl_setopt($this->curl, CURLOPT_HEADER, true);
 
         // ensure actual response is returned
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
@@ -139,12 +139,12 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
         }
         
         
-        
-        
         // send the request
-        $response = curl_exec($this->curl);
-
-        $this->response = $response;
+        $response_body = curl_exec($this->curl);        
+        
+        $response_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+        
+        $this->response = new RealestateCoNz_Api_Http_Response($response_code, RealestateCoNz_Api_Http_Response::extractHeaders($response_body), RealestateCoNz_Api_Http_Response::extractBody($response_body));
         
         $request = array();
 
@@ -163,7 +163,7 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
     /**
      * Return read response from server
      *
-     * @return string
+     * @return RealestateCoNz_Api_Http_Response
      */
     public function read()
     {
