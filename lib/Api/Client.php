@@ -52,13 +52,39 @@ class RealestateCoNz_Api_Client
      *
      * @var RealestateCoNz_Api_Encoder
      */
-    protected $encoder;
-   
+    protected $encoder;   
+    
+    /**
+     *
+     * @var RealestateCoNz_Api_Http_Response
+     */
+    protected $last_response; 
+    
     /**
      *
      * @var array
      */
-    protected $request_info; 
+    protected $last_request; 
+    
+    /**
+     *
+     * @var RealestateCoNz_Api_Http_Adapter_Interface
+     */
+    protected $http_adapter;
+    
+    
+    /**
+     * Configuration array, set using the constructor or using ::setConfig()
+     *
+     * @var array
+     */
+    protected $http_config = array(
+        'maxredirects'    => 5,
+        'useragent'       => 'Realestate.co.nz API Client',
+        'timeout'         => 100,
+        'adapter'         => 'RealestateCoNz_Api_Http_Adapter_Curl',
+        'keepalive'       => false,
+    );
     
     /**
      *
@@ -75,6 +101,10 @@ class RealestateCoNz_Api_Client
         $this->server = $server;
     }
     
+    public function setHttpConfig($http_config)
+    {
+        $this->http_config = array_merge($this->http_config, $http_config);
+    }
     
     /**
      * Set the api version
@@ -98,11 +128,12 @@ class RealestateCoNz_Api_Client
      * @param string $path
      * @param array $query_params
      * @param array $post_params
+     * @param string $raw_data
      * @return string
      */
-    public function createSignature($api_method, $query_params = array(), $post_params = array())
+    public function createSignature($api_method, $query_params = array(), $post_params = null, $raw_data = null)
     {
-        return $this->getEncoder()->createSignature($this->buildPath($api_method), $query_params, $post_params);
+        return $this->getEncoder()->createSignature($this->buildPath($api_method), $query_params, $post_params, $raw_data);
     }
     
     public function normaliseApiMethod($api_method)
@@ -153,10 +184,46 @@ class RealestateCoNz_Api_Client
     }
     
     
-    public function sendRequest($method)
+    /**
+     * Get http adapter
+     *
+     * @return RealestateCoNz_Api_Http_Adapter_Interface $adapter
+     */
+    public function getHttpAdapter()
     {
-        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams());
+        if (null === $this->http_adapter) {            
+            $adapterClass = $this->http_config['adapter'];
+            
+            if(!class_exists($adapterClass)) {
+                throw new RealestateCoNz_Api_Client_Exception('Adapter not found: ' . $adapterClass);
+            }
+            
+            $adapter = new $adapterClass();
+            
+            $config = $this->http_config;
+            unset($config['adapter']);
+            
+            $adapter->setConfig($config);
+            
+            $this->http_adapter = $adapter;
+        }
 
+        return $this->http_adapter;
+    }
+    
+    
+    /**
+     *
+     * @param RealestateCoNz_Api_Method $method
+     * @return mixed
+     */
+    public function sendRequest(RealestateCoNz_Api_Method $method)
+    {
+        $this->getHttpAdapter()->connect($this->server, 80);
+        
+        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $method->getRawData());
+
+        // buidl the url
         $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
 
         $query_params = array(
@@ -169,28 +236,62 @@ class RealestateCoNz_Api_Client
             $query_params = array_merge($query_params, $method->getQueryParams());
         }
 
-        $url .= '?' . http_build_query($query_params);
+        $url .= '?' . http_build_query($query_params, null, '&');
 
-        $ch = curl_init();
+        // prepare body
+        $body = null;
+        if($method->getHttpMethod() === 'POST' || $method->getHttpMethod() === 'PUT') {            
+            if($method->getPostParams()) {
+                $body = http_build_query($method->getPostParams(), null, '&');
+            } elseif(null !== $method->getRawData()) {
+                $body = $method->getRawData();
+            }
+        }
+        
+        
+        // prepare headers
+        $headers = $method->getHttpHeaders();
 
-        /* Set default cURL options */
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0); 
-        curl_setopt($ch, CURLOPT_TIMEOUT, 100);
-
-        if ($method->getPostParams())
-        {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($method->getPostParams()));
-            curl_setopt($ch, CURLOPT_POST, true);
+        // Set the connection header
+        if (!$this->http_config['keepalive']) {
+            $headers[] = "Connection: close";
+        }
+        
+        // Set the Content-Type header
+        if (($method->getHttpMethod() == 'POST' || $method->getHttpMethod() == 'PUT') && (null !== $method->getHttpEncType())) {
+            $headers[] = 'Content-Type: ' . $method->getHttpEncType();
+            
         }
 
-        $result = curl_exec($ch);
+        // Set the user agent header
+        if (isset($this->http_config['useragent'])) {
+            $headers[] = "User-Agent: {$this->http_config['useragent']}";
+        }
+        
+        
+        $this->last_request = $this->getHttpAdapter()->write($method->getHttpMethod(), $url, $headers, $body);
 
-        $this->request_info = curl_getinfo($ch);
-
-        curl_close($ch);
-
-        return json_decode($result, true);
-    }    
+        $this->last_response = $this->getHttpAdapter()->read();
+        
+        return $method->parseResponse($this->last_response, $this);
+    }
+    
+    
+    /**
+     *
+     * @return RealestateCoNz_Api_Http_Response
+     */
+    public function getLastResponse()
+    {
+        return $this->last_response;
+    }
+    
+    /**
+     *
+     * @return array
+     */
+    public function getLastRequest()
+    {
+        return $this->last_request;
+    }
 }

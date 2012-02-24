@@ -16,12 +16,8 @@
  * under the License.
  */
 
-class RealestateCoNz_Api_Method_Listing_Search extends RealestateCoNz_Api_Method 
+class RealestateCoNz_Api_Client_Exception extends \Exception
 {
-
-    public function getUrl()
-    {
-        return '/listings/';
-    }
+       
+    
 }
-

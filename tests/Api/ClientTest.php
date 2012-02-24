@@ -30,4 +30,54 @@ class RealestateCoNz_Api_ClientTest extends PHPUnit_Framework_TestCase
         
         $this->assertEquals('05BDA2578669706001612CB9E2FD3E84', $client->createSignature('/test/', array('foo' => 'bar'), array('var2' => 'value', 'var1' => 'value')));
     }
+    
+    public function testGetHttpAdapter()
+    {
+        $client = new RealestateCoNz_Api_Client('aaaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbbbbbbbbbbbbbbbbb', 1);
+                
+        $adapter_config = array(
+            'adapter' => 'RealestateCoNz_Api_Http_Adapter_Test'
+        );
+        
+        $client->setHttpConfig($adapter_config);
+        
+        $this->assertInstanceOf('RealestateCoNz_Api_Http_Adapter_Test', $client->getHttpAdapter());
+    }
+    
+    public function testSendRequest()
+    {
+        $client = new RealestateCoNz_Api_Client('aaaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbbbbbbbbbbbbbbbbb', 1);
+                
+        
+        $adapter_config = array(
+            'adapter' => 'RealestateCoNz_Api_Http_Adapter_Test',
+            'mock_response' => '{"message" : "test mock response"}'
+        );
+        
+        $client->setHttpConfig($adapter_config);
+        
+        $method = new RealestateCoNz_Api_Method_Mock();
+        
+        $response = $client->sendRequest($method);
+        
+        $this->assertEquals('{"message" : "test mock response"}', $client->getLastResponse());
+        
+        $this->assertEquals(array('message' => 'test mock response'), $response);
+        
+        
+        $request = $client->getLastRequest();
+        
+        $this->assertEquals('http://api.realestate.co.nz/1/mock/?api_key=bbbbbbbbbbbbbbbbbbbbbbb&api_sig=A2E14A8368118341AD8DA765C13331C6', $request['uri']);
+        
+    }
+}
+
+
+
+class RealestateCoNz_Api_Method_Mock extends RealestateCoNz_Api_Method
+{
+    public function getUrl()
+    {
+        return '/mock/';
+    }
 }
