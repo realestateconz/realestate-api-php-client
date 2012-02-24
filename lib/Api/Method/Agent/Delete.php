@@ -30,15 +30,25 @@ class RealestateCoNz_Api_Method_Agent_Delete extends RealestateCoNz_Api_Method
      * @var int
      */
     protected $id;
+    
+    
+    /**
+     *
+     * @var int
+     */
+    protected $office_id;
         
     /**
      *
      * @param int $id 
      */
-    public function __construct($id)
+    public function __construct($id, $office_id)
     {
         $this->id = $id;
 
+        
+        $this->office_id = $office_id;
+        
     }
     
     /**
@@ -47,7 +57,8 @@ class RealestateCoNz_Api_Method_Agent_Delete extends RealestateCoNz_Api_Method
      */
     public function getUrl()
     {
-        return '/agents/' . $this->id . '/';
+        
+        return '/agents/' . $this->id . '/offices/' . $this->office_id . '/';
     }
 }
 
