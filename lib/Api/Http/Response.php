@@ -106,6 +106,51 @@ class RealestateCoNz_Api_Http_Response
         return $this->code;
     }
     
+    /**
+     * Check whether the response is an error
+     *
+     * @return boolean
+     */
+    public function isError()
+    {
+        $restype = floor($this->code / 100);
+        if ($restype == 4 || $restype == 5) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether the response in successful
+     *
+     * @return boolean
+     */
+    public function isSuccess()
+    {
+        $restype = floor($this->code / 100);
+        if ($restype == 2 || $restype == 1) { 
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether the response is a redirection
+     *
+     * @return boolean
+     */
+    public function isRedirect()
+    {
+        $restype = floor($this->code / 100);
+        if ($restype == 3) {
+            return true;
+        }
+
+        return false;
+    }
+    
     
     /**
      *
