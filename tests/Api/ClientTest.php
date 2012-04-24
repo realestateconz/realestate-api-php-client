@@ -60,7 +60,7 @@ class RealestateCoNz_Api_ClientTest extends PHPUnit_Framework_TestCase
         
         $response = $client->sendRequest($method);
         
-        $this->assertEquals('{"message" : "test mock response"}', $client->getLastResponse());
+        $this->assertEquals('{"message" : "test mock response"}', $client->getLastResponse()->getBody());
         
         $this->assertEquals(array('message' => 'test mock response'), $response);
         

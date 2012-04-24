@@ -16,5 +16,5 @@
  * under the License.
  */
 
-require_once dirname(__FILE__).'/../lib/Autoloader.php';
+require_once dirname(__FILE__).'/../lib/RealestateCoNz/Autoloader.php';
 RealestateCoNz_Autoloader::register();
