@@ -16,43 +16,49 @@
  * under the License.
  */
 
-class RealestateCoNz_Api_Method_Agent_Get extends RealestateCoNz_Api_Method 
+class RealestateCoNz_Api_Method_Login_Post extends RealestateCoNz_Api_Method 
 {
-
+    
     /**
      *
      * @var string
      */
-    protected $format;    
+    protected $http_method = 'POST';
+
+    /**
+     *
+     * @var array
+     */
+    protected $http_headers = array(
+        'Content-Type' => 'application/json'
+    );
     
     /**
      *
-     * @var int
+     * @var string
      */
-    protected $id;
-        
+    protected $data;
+    
     /**
      *
-     * @param int $id 
+     * @param string $data
      */
-    public function __construct( $id, $format = null )
+    public function __construct($data = null)
     {
-        $this->id = $id;
-        if(null !== $format) {
-            $this->setData($format);
+        if(null !== $data) {
+            $this->setData($data);
         }
     }
-
-        /**
+    
+    /**
      *
      * @param string $data 
      */
-    public function setData($format)
+    public function setData($data)
     {
-        $this->format = $format;
-        $this->setQueryParams($format);
+        $this->data = $data;
+        $this->setRawData($data);
     }
-    
     
     /**
      *
@@ -60,7 +66,7 @@ class RealestateCoNz_Api_Method_Agent_Get extends RealestateCoNz_Api_Method
      */
     public function getUrl()
     {
-        return '/agents/' . $this->id . '/';
+        return '/accounts/login/';
     }
 }
 
