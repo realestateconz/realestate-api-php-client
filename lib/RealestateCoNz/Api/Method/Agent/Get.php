@@ -49,7 +49,6 @@ class RealestateCoNz_Api_Method_Agent_Get extends RealestateCoNz_Api_Method
      */
     public function setData($format)
     {
-        $this->format = $format;
         $this->setQueryParams($format);
     }
     
