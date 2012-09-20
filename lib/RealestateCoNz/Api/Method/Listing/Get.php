@@ -21,24 +21,11 @@ class RealestateCoNz_Api_Method_Listing_Get extends RealestateCoNz_Api_Method
 
     protected $id;
 
-    public function __construct($id,$format = null)
+    public function __construct($id)
     {
         $this->id = $id;
-        if(null !== $format) {
-            $this->setData($format);
-        }        
-
     }
    
-     /**
-     *
-     * @param string $data 
-     */
-    public function setData($format)
-    {
-        $this->setQueryParams($format);
-    }    
-
     public function getUrl()
     {
         return '/listings/' . $this->id . '/';
