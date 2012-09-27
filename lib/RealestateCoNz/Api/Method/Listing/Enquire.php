@@ -18,7 +18,7 @@
 
 class RealestateCoNz_Api_Method_Listing_Enquire extends RealestateCoNz_Api_Method 
 {
-
+    protected $http_method = 'POST';
     protected $id;
 
     public function __construct($id)
