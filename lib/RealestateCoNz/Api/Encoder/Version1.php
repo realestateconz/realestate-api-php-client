@@ -74,7 +74,7 @@ class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
             
             $api_signature_parts[] = urlencode($params_flat);
         }
-        
+
         // process post params
         if(!empty($post_params)) {
             $post_content = '';

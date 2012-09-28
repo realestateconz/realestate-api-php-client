@@ -236,7 +236,26 @@ class RealestateCoNz_Api_Client
             $query_params = array_merge($query_params, $method->getQueryParams());
         }
 
-        $url .= '?' . http_build_query($query_params, null, '&');
+        /* Build URL - generating multiple vars for values that are an array of values */
+        $temp = array();
+
+        foreach ($query_params as $key => $value)
+        {
+            if (is_array($value))
+            {
+
+                foreach ($value as $element)
+                {
+                    array_push($temp, $key . '=' . urlencode($element));
+                }
+
+            } else {
+
+                array_push($temp, $key . '=' . urlencode($value));
+            }
+        }
+
+        $url .= '?' . implode('&', $temp);
 
         // prepare body
         $body = null;
