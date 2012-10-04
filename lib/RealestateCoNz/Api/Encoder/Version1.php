@@ -27,7 +27,7 @@ class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
      * @param string $raw_data
      * @return string
      */
-    public function createSignature($path, array $query_params = array(), array $post_params = null, $raw_data = null)
+    public function createSignature($path, array $query_params = array(), array $post_params = null, $raw_data = null, $http_auth = null)
     {
         $api_signature_parts = array();
 
@@ -36,7 +36,12 @@ class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
         
         //
         $api_signature_parts[] = $path;
-
+        
+       
+        if(!is_null($http_auth))
+        {
+            $api_signature_parts[] = $http_auth;
+        }    
 
         
         

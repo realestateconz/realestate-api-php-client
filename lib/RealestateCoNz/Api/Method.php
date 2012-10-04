@@ -52,6 +52,18 @@ abstract class RealestateCoNz_Api_Method
     
     /**
      *
+     * @var string
+     */
+    protected $http_auth_username = false;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $http_auth_password = false;    
+    
+    /**
+     *
      * @param string $raw_data 
      */
     public function setRawData($raw_data)
@@ -77,6 +89,24 @@ abstract class RealestateCoNz_Api_Method
         return $this->http_enc_type;
     }
 
+    /**
+     *
+     * @return string
+     */
+    public function getHttpAuthPassword()
+    {
+        return $this->http_auth_password;
+    }    
+    
+    /**
+     *
+     * @return string
+     */
+    public function getHttpAuthUsername()
+    {
+        return $this->http_auth_username;
+    }        
+    
     /**
      *
      * @param array $params 
@@ -129,16 +159,78 @@ abstract class RealestateCoNz_Api_Method
      */
     public function getHttpHeaders()
     {
-        return $this->http_headers;
+        $headers = $this->http_headers;
+        if($this->hasHttpAuth())
+        {
+            array_push($headers,'Authorization: Basic ' . base64_encode($this->http_auth_username . ':' . $this->http_auth_password));
+        }    
+        return $headers;
     }
     
     
     abstract public function getUrl();
     
+    /**
+     *
+     * @return string  concatinated username and password
+     */
+    public function getHttpAuthConcat()
+    {
+        if($this->hasHttpAuth())
+        {
+            return $this->getHttpAuthUsername().$this->getHttpAuthPassword();
+        }
+        return null;
+    }      
+    
+    
     public function preExecute()
     {
         
     }
+    
+    /**
+     *
+     * @param array $headers 
+     */
+    public function setHttpHeaders($headers)
+    {
+        $this->http_headers = $headers;
+    }    
+    
+    /**
+     * 
+     * 
+     * @param string $password 
+     */
+    public function setHttpAuthPassword($password)
+    {
+        $this->http_auth_password = $password;
+    }
+    
+    /**
+     * 
+     * 
+     * @param string $username 
+     */
+    public function setHttpAuthUsername($username)
+    {
+        $this->http_auth_username = $username;
+    }    
+    
+    /*
+     * 
+     * @return bool 
+     */
+    public function hasHttpAuth()
+    {
+        if($this->http_auth_password === false || $this->http_auth_username === false )
+        {
+            return false;
+        }       
+        return true;    
+    }
+    
     
     /**
      *

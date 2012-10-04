@@ -131,9 +131,9 @@ class RealestateCoNz_Api_Client
      * @param string $raw_data
      * @return string
      */
-    public function createSignature($api_method, $query_params = array(), $post_params = null, $raw_data = null)
+    public function createSignature($api_method, $query_params = array(), $post_params = null, $raw_data = null, $http_auth = null)
     {
-        return $this->getEncoder()->createSignature($this->buildPath($api_method), $query_params, $post_params, $raw_data);
+        return $this->getEncoder()->createSignature($this->buildPath($api_method), $query_params, $post_params, $raw_data, $http_auth);
     }
     
     public function normaliseApiMethod($api_method)
@@ -162,6 +162,9 @@ class RealestateCoNz_Api_Client
         
         return $path;
     }
+    
+    
+  
     
     /**
      * Get signature encoder
@@ -221,7 +224,7 @@ class RealestateCoNz_Api_Client
     {
         $this->getHttpAdapter()->connect($this->server, 80);
         
-        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $method->getRawData());
+        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $method->getRawData(), $method->getHttpAuthConcat());
 
         // buidl the url
         $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
@@ -270,7 +273,7 @@ class RealestateCoNz_Api_Client
         
         // prepare headers
         $headers = $method->getHttpHeaders();
-
+        
         // Set the connection header
         if (!$this->http_config['keepalive']) {
             $headers[] = "Connection: close";
@@ -291,6 +294,12 @@ class RealestateCoNz_Api_Client
         $this->last_request = $this->getHttpAdapter()->write($method->getHttpMethod(), $url, $headers, $body);
 
         $this->last_response = $this->getHttpAdapter()->read();
+        
+        //print '<hr>';
+        //print_r($this->last_request);
+        //print '<hr>';
+        //print_r($this->last_response);
+        //exit;
         
         return $method->parseResponse($this->last_response, $this);
     }
