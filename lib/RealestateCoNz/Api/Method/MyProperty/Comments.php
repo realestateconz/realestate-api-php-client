@@ -16,21 +16,21 @@
  * under the License.
  */
 
-class RealestateCoNz_Api_Method_MyProperty_Listings extends RealestateCoNz_Api_Method 
+class RealestateCoNz_Api_Method_MyProperty_Comments extends RealestateCoNz_Api_Method 
 {
 
-    protected $id;
-
-    public function __construct($username, $password)
+    private $listingid;
+    
+    public function __construct($userid, $listingid)
     {
-        $this->setHttpAuthPassword($password);
-        $this->setHttpAuthUsername($username);
-       
+        $this->listingid = $listingid;
+        $headers = array('x-api-key: <type:internal>', 'x-per-org-id: ' . $userid); 
+        $this->setHttpHeaders($headers); 
     }
    
     public function getUrl()
     {
-        return '/my-property/listings/';
+        return '/my-property/listings/'.$this->listingid.'/comments/';
     }
 }
 
