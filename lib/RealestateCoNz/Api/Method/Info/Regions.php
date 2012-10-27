@@ -16,12 +16,12 @@
  * under the License.
  */
 
-class RealestateCoNz_Api_Method_Info_Ratings extends RealestateCoNz_Api_Method 
+class RealestateCoNz_Api_Method_Info_Regions extends RealestateCoNz_Api_Method 
 {
 
     public function getUrl()
     {
-        return '/ratings/';
+        return '/regions/';
     }
 }
 
