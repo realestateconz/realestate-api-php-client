@@ -172,7 +172,7 @@ abstract class RealestateCoNz_Api_Method
     
     /**
      *
-     * @return string  concatinated username and password
+     * @return string  concatenated username and password
      */
     public function getHttpAuthConcat()
     {
@@ -191,12 +191,22 @@ abstract class RealestateCoNz_Api_Method
     
     /**
      *
+     * @param string $name
+     * @param mixed $value 
+     */
+    public function setHttpHeader($name, $value)
+    {
+        $this->http_headers[$name] = $value;
+    }
+    
+    /**
+     *
      * @param array $headers 
      */
     public function setHttpHeaders($headers)
     {
         $this->http_headers = $headers;
-    }    
+    }
     
     /**
      * 
