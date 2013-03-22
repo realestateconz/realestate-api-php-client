@@ -170,6 +170,16 @@ abstract class RealestateCoNz_Api_Method
     
     abstract public function getUrl();
     
+    
+    /**
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return str_replace('class RealestateCoNz_Api_Method_', '', get_class($this));
+    }
+    
     /**
      *
      * @return string  concatenated username and password
