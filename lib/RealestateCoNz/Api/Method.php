@@ -181,6 +181,27 @@ abstract class RealestateCoNz_Api_Method
     }
     
     /**
+     * Calculate unique cache key for the current api call
+     * 
+     * @return string
+     */
+    public function getCacheKey()
+    {
+        $cacheKey = $this->getCode() . ':';
+        
+        $cacheKey .= md5(serialize($this->query_params)
+            . serialize($this->post_params)
+            . serialize($this->raw_data)
+            . serialize($this->http_headers)
+            . serialize($this->http_auth_username)
+            . serialize($this->http_auth_password)
+        );
+        
+        
+        return $cacheKey;
+    }
+    
+    /**
      *
      * @return string  concatenated username and password
      */
