@@ -153,6 +153,20 @@ class RealestateCoNz_Api_Http_Response
         return false;
     }
     
+    /**
+     * Check whether the response is a server side error
+     * 
+     * @return bool
+     */
+    public function isServerError()
+    {
+        if ($this->getCodeClass() === 5) {
+            return true;
+        }
+
+        return false;
+    }
+    
     
     /**
      * Check whether the response in successful
