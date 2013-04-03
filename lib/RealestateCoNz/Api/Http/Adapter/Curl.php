@@ -21,13 +21,13 @@
  */
 class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Adapter
 {
-    
+
     protected $config = array();
-    
+
     protected $curl;
-    
+
     protected $response;
-    
+
     /**
      * Set the config for the adapter
      *
@@ -49,7 +49,7 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
         if(null !== $this->curl) {
             $this->close();
         }
-        
+
         // Do the actual connection
         $this->curl = curl_init();
         if ($port != 80) {
@@ -61,7 +61,7 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
 
         // Set Max redirects
         curl_setopt($this->curl, CURLOPT_MAXREDIRS, $this->config['maxredirects']);
-        
+
     }
 
     /**
@@ -77,18 +77,18 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
     {
         // ensure correct method name
         $method = strtoupper($method);
-        
+
         // Make sure we're properly connected
         if (!$this->curl) {
             throw new RealestateCoNz_Api_Http_Adapter_Exception("Connection failed");
         }
-        
-        
+
+
         // set URL
         curl_setopt($this->curl, CURLOPT_URL, $url);
-        
+
         $curlValue = true;
-        
+
         switch ($method) {
             case 'GET':
                 $curlMethod = CURLOPT_HTTPGET;
@@ -112,50 +112,51 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
                 // Unsupported method
                 throw new RealestateCoNz_Api_Http_Adapter_Exception("Method not supported: " . $method);
         }
-        
+
         curl_setopt($this->curl, $curlMethod, $curlValue);
-        
-        
+
+
         // don't return headers
         curl_setopt($this->curl, CURLOPT_HEADER, true);
 
         // ensure actual response is returned
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
-        
+
         // set headers
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
-        
-        
-        // 
+
+
+        //
         curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
-        
-        
-        
+
+
+
         // set request body
         if(null !== $body) {
             if ($method == 'POST' || $method == 'PUT' || $method == 'DELETE') {
                 curl_setopt($this->curl, CURLOPT_POSTFIELDS, $body);
             }
         }
-        
-        
+
+
         // send the request
-        $response_body = curl_exec($this->curl);        
-        
+        $response_body = curl_exec($this->curl);
+
+
         $response_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-        
+
         $this->response = new RealestateCoNz_Api_Http_Response($response_code, RealestateCoNz_Api_Http_Response::extractHeaders($response_body), RealestateCoNz_Api_Http_Response::extractBody($response_body));
-        
+
         $request = array();
 
-        if (empty($this->response)) {
+        if (empty($this->response) || $response_body === false) {
             throw new RealestateCoNz_Api_Http_Adapter_Exception("Error in cURL request: " . curl_error($this->curl));
         }
 
         $request['uri'] = $url;
         $request['method'] = $method;
         $request['headers'] = curl_getinfo($this->curl, CURLINFO_HEADER_OUT);
-        $request['body'] = $body;        
+        $request['body'] = $body;
 
         return $request;
     }
@@ -169,8 +170,8 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
     {
         return $this->response;
     }
-    
-    
+
+
     /**
      * Close the connection to the server
      *
@@ -180,9 +181,9 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
         if(is_resource($this->curl)) {
             curl_close($this->curl);
         }
-        
+
         $this->curl         = null;
     }
-    
-    
+
+
 }
