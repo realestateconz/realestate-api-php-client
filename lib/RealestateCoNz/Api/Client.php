@@ -224,42 +224,6 @@ class RealestateCoNz_Api_Client
     {
         $this->getHttpAdapter()->connect($this->server, 80);
         
-        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $method->getRawData(), $method->getHttpAuthConcat());
-
-        // buidl the url
-        $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
-
-        $query_params = array(
-                                'api_key' => $this->public_key,
-                                'api_sig' => $api_signature,
-        );
-
-        if (is_array($method->getQueryParams()) && count($method->getQueryParams()))
-        {
-            $query_params = array_merge($query_params, $method->getQueryParams());
-        }
-
-        /* Build URL - generating multiple vars for values that are an array of values */
-        $temp = array();
-
-        foreach ($query_params as $key => $value)
-        {
-            if (is_array($value))
-            {
-
-                foreach ($value as $element)
-                {
-                    array_push($temp, $key . '=' . urlencode($element));
-                }
-
-            } else {
-
-                array_push($temp, $key . '=' . urlencode($value));
-            }
-        }
-
-        $url .= '?' . implode('&', $temp);
-
         // prepare body
         $body = null;
         if($method->getHttpMethod() === 'POST' || $method->getHttpMethod() === 'PUT') {            
@@ -290,18 +254,51 @@ class RealestateCoNz_Api_Client
             $headers[] = "User-Agent: {$this->http_config['useragent']}";
         }
         
-        
-        $this->last_request = $this->getHttpAdapter()->write($method->getHttpMethod(), $url, $headers, $body);
+        $this->last_request = $this->getHttpAdapter()->write($method->getHttpMethod(), $this->buildRequestUrl($method), $headers, $body);
 
         $this->last_response = $this->getHttpAdapter()->read();
         
-        //print '<hr>';
-        //print_r($this->last_request);
-        //print '<hr>';
-        //print_r($this->last_response);
-        //exit;
-        
         return $method->parseResponse($this->last_response, $this);
+    }
+    
+    /**
+     * Build request url for api method
+     * 
+     * @param RealestateCoNz_Api_Method $method
+     * @return string 
+     */
+    public function buildRequestUrl(RealestateCoNz_Api_Method $method)
+    {
+        $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $method->getRawData(), $method->getHttpAuthConcat());
+
+        // build the url
+        $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
+
+        $query_params = array(
+            'api_key' => $this->public_key,
+            'api_sig' => $api_signature,
+        );
+
+        if (is_array($method->getQueryParams()) && count($method->getQueryParams())) {
+            $query_params = array_merge($query_params, $method->getQueryParams());
+        }
+
+        /* Build URL - generating multiple vars for values that are an array of values */
+        $temp = array();
+
+        foreach ($query_params as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $element) {
+                    array_push($temp, $key . '=' . urlencode($element));
+                }
+            } else {
+                array_push($temp, $key . '=' . urlencode($value));
+            }
+        }
+
+        $url .= '?' . implode('&', $temp);
+        
+        return $url;
     }
     
     
