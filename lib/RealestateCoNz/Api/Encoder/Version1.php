@@ -56,7 +56,6 @@ class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
         if(isset($query_params['api_sig'])) {
             unset($query_params['api_sig']);
         }
-        
         if(count($query_params) > 0) {
             // Sort your URL argument list into alphabetical (ASCII) order based on the parameter name and value.
             ksort($query_params);
@@ -64,7 +63,7 @@ class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
             foreach($query_params as $name => $value)
             {
                 if(is_array($value)) {
-                    sort($value);
+                    sort($value, SORT_STRING);
 
                     foreach($value as $value2)
                     {
@@ -88,17 +87,17 @@ class RealestateCoNz_Api_Encoder_Version1 extends RealestateCoNz_Api_Encoder
           
             $api_signature_parts[] = $post_content;
         }
-        
+
         // raw data
         if(null !== $raw_data) {
             // replace all \r's & \n's to ensure cross platform compatibility
             $api_signature_parts[] = str_replace(array("\n", "\r"), array('', ''), $raw_data);
         }
-        
+
         $api_signature_encoded = md5(implode('', $api_signature_parts));
         
         $api_signature_encoded = strtoupper($api_signature_encoded);
-                
+
         //echo "\nNew: '" . implode('', $api_signature_parts) . "'\n"; exit;
         //echo "\nmd5 New: " . $api_signature_encoded . "\n";
 
