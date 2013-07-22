@@ -16,7 +16,7 @@
  * under the License.
  */
 
-class RealestateCoNz_AutoloaderTest extends PHPUnit_Framework_TestCase
+class RealestateCoNz_Api_Tests_AutoloaderTest extends PHPUnit_Framework_TestCase
 {
     public function testAutoload()
     {
@@ -25,6 +25,8 @@ class RealestateCoNz_AutoloaderTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(class_exists('RealestateCoNz_Client'), '->autoload() does not load classes that do not begin with RealestateCoNz_Api');
         
         $this->assertTrue(class_exists('RealestateCoNz_Api_Client'), '->autoload() loads classes that begin with RealestateCoNz_Api');
+        
+        $this->assertTrue(interface_exists('RealestateCoNz_Api_ResponseParser'), '->autoload() loads interfaces that begin with RealestateCoNz_Api');
         
         $autoloader = new RealestateCoNz_Autoloader();
         $this->assertNull($autoloader->autoload('Foo'), '->autoload() returns false if it is not able to load a class');

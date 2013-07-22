@@ -17,9 +17,8 @@
  */
 
 
-class RealestateCoNz_Api_Encoder_Version1Test extends PHPUnit_Framework_TestCase
+class RealestateCoNz_Api_Tests_Encoder_Version1Test extends PHPUnit_Framework_TestCase
 {
-    
     
     public function testCreateSignature()
     {
