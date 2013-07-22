@@ -1,0 +1,26 @@
+{
+    "name": "realestateconz/api-client",
+    "type": "library",
+    "description": "Realestate.co.nz Api Client",
+    "keywords": ["realestate.co.nz", "property", "listings", "api", "client"],
+    "homepage": "http://www.github.com/realestateconz/realestate-api-php-client/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Realestate.co.nz",
+            "homepage": "http://www.realestate.co.nz"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/realestateconz/realestate-api-php-client/contributors"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-0": {
+            "RealestateCoNz_Api": "lib"
+        }
+    },
+    "target-dir": "realestateconz/api-client"
+}
