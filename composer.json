@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-0": {
-            "RealestateCoNz_Api": "lib"
+            "RealestateCoNz_": "lib/"
         }
     },
     "target-dir": "realestateconz/api-client"
