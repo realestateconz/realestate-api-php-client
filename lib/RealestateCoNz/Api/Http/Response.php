@@ -114,7 +114,7 @@ class RealestateCoNz_Api_Http_Response
     {
         $code_class = floor($this->code / 100);
         
-        return $code_class;
+        return (int) $code_class;
     }
     
     /**
