@@ -41,6 +41,7 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
     /**
      * Connect to the remote server
      *
+     * @throws RealestateCoNz_Api_Http_Adapter_Exception
      * @param string  $host
      * @param int     $port
      */
@@ -73,6 +74,7 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
     /**
      * Send request to the remote server
      *
+     * @throws RealestateCoNz_Api_Http_Adapter_Exception
      * @param string        $method
      * @param string        $url
      * @param array         $headers
