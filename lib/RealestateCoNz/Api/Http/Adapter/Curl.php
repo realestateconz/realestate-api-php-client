@@ -52,6 +52,12 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
 
         // Do the actual connection
         $this->curl = curl_init();
+        
+        // Make sure we're properly connected
+        if (false === $this->curl) {
+            throw new RealestateCoNz_Api_Http_Adapter_Exception("Could not initialise curl");
+        }
+        
         if ($port != 80) {
             curl_setopt($this->curl, CURLOPT_PORT, intval($port));
         }
@@ -77,12 +83,6 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
     {
         // ensure correct method name
         $method = strtoupper($method);
-
-        // Make sure we're properly connected
-        if (!$this->curl) {
-            throw new RealestateCoNz_Api_Http_Adapter_Exception("Connection failed");
-        }
-
 
         // set URL
         curl_setopt($this->curl, CURLOPT_URL, $url);
@@ -125,10 +125,8 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
         // set headers
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
 
-
         //
         curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
-
 
 
         // set request body
@@ -138,20 +136,19 @@ class RealestateCoNz_Api_Http_Adapter_Curl implements RealestateCoNz_Api_Http_Ad
             }
         }
 
-
         // send the request
         $response_body = curl_exec($this->curl);
-
+        
+        // check for connection errors
+        if(false === $response_body) {
+            throw new RealestateCoNz_Api_Http_Adapter_Exception("Error occured while executing request: " . curl_error($this->curl), curl_errno($this->curl));
+        }
 
         $response_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 
         $this->response = new RealestateCoNz_Api_Http_Response($response_code, RealestateCoNz_Api_Http_Response::extractHeaders($response_body), RealestateCoNz_Api_Http_Response::extractBody($response_body));
 
         $request = array();
-
-        if (empty($this->response) || $response_body === false) {
-            throw new RealestateCoNz_Api_Http_Adapter_Exception("Error in cURL request: " . curl_error($this->curl));
-        }
 
         $request['uri'] = $url;
         $request['method'] = $method;
