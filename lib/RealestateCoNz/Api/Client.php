@@ -251,7 +251,7 @@ class RealestateCoNz_Api_Client
 
         // Set the user agent header
         if (isset($this->http_config['useragent'])) {
-            $headers[] = "User-Agent: {$this->http_config['useragent']}";
+            $headers[] = "User-Agent: {$this->http_config['useragent']} (api-key: {$this->public_key})";
         }
         
         $this->last_request = $this->getHttpAdapter()->write($method->getHttpMethod(), $this->buildRequestUrl($method), $headers, $body);
@@ -309,6 +309,15 @@ class RealestateCoNz_Api_Client
     public function getLastResponse()
     {
         return $this->last_response;
+    }
+    
+    /**
+     *
+     * @return RealestateCoNz_Api_Http_Response
+     */
+    public function setLastResponse($last_response)
+    {
+        $this->last_response = $last_response;
     }
     
     /**
