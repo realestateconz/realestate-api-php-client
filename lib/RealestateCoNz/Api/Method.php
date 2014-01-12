@@ -63,6 +63,11 @@ abstract class RealestateCoNz_Api_Method
     protected $http_auth_password = false;    
     
     /**
+     * @var string '1'|'2.0'
+     */
+    protected $api_version = '1';
+    
+    /**
      *
      * @param string $raw_data 
      */
@@ -170,7 +175,7 @@ abstract class RealestateCoNz_Api_Method
     
     abstract public function getUrl();
     
-    
+
     /**
      *
      * @return string
@@ -283,5 +288,13 @@ abstract class RealestateCoNz_Api_Method
     {
         return json_decode($response->getBody(), true);
     }
+    
+    /**
+     * @return string
+     */    
+    public function getApiVersion()
+    {
+        return $this->api_version;
+    }    
 }
 

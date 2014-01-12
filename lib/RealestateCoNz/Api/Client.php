@@ -46,7 +46,7 @@ class RealestateCoNz_Api_Client
      *
      * @var array
      */
-    protected $supported_versions = array(1);
+    protected $supported_versions = array('1','2.0');
     
     /**
      *
@@ -173,14 +173,15 @@ class RealestateCoNz_Api_Client
      */
     protected function getEncoder()
     {
-        if(!isset($this->encoder)) {
-            switch($this->version) {
-                case 1:
-                    $this->encoder = new RealestateCoNz_Api_Encoder_Version1($this->private_key, $this->public_key);
-                    break;
-                default:
-                    throw new Exception('Api version not supported: ' . $version);
-            }
+        switch($this->version) {
+            case 1:
+                $this->encoder = new RealestateCoNz_Api_Encoder_Version1($this->private_key, $this->public_key);
+                break;
+            case 2:
+                $this->encoder = new RealestateCoNz_Api_Encoder_Version2($this->private_key, $this->public_key);
+                break;
+            default:
+                throw new Exception('Api version not supported: ' . $version);
         }
         
         return $this->encoder;
@@ -269,6 +270,10 @@ class RealestateCoNz_Api_Client
      */
     public function buildRequestUrl(RealestateCoNz_Api_Method $method)
     {
+        // Set api version by method api version
+        $methodApiVersion = $method->getApiVersion();
+        $this->setVersion($methodApiVersion);   
+        
         $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $method->getRawData(), $method->getHttpAuthConcat());
 
         // build the url
@@ -276,9 +281,9 @@ class RealestateCoNz_Api_Client
 
         $query_params = array(
             'api_key' => $this->public_key,
-            'api_sig' => $api_signature,
+            'api_sig' => $api_signature
         );
-
+        
         if (is_array($method->getQueryParams()) && count($method->getQueryParams())) {
             $query_params = array_merge($query_params, $method->getQueryParams());
         }
