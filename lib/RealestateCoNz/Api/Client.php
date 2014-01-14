@@ -46,7 +46,13 @@ class RealestateCoNz_Api_Client
      *
      * @var array
      */
-    protected $supported_versions = array('1','2.0');
+    protected $supported_versions = array('1');
+       
+    /**
+     *
+     * @var array
+     */
+    protected $url_signed_versions = array('1');
     
     /**
      *
@@ -133,9 +139,13 @@ class RealestateCoNz_Api_Client
      */
     public function createSignature($api_method, $query_params = array(), $post_params = null, $raw_data = null, $http_auth = null)
     {
-        return $this->getEncoder()->createSignature($this->buildPath($api_method), $query_params, $post_params, $raw_data, $http_auth);
+        if(in_array($this->version , $this->url_signed_versions)) {
+            return $this->getEncoder()->createSignature($this->buildPath($api_method), $query_params, $post_params, $raw_data, $http_auth);
+        } else {
+            return null;
+        }
     }
-    
+        
     public function normaliseApiMethod($api_method)
     {
         if(substr($api_method, 0, 1) !== '/') {
@@ -173,15 +183,14 @@ class RealestateCoNz_Api_Client
      */
     protected function getEncoder()
     {
-        switch($this->version) {
-            case 1:
-                $this->encoder = new RealestateCoNz_Api_Encoder_Version1($this->private_key, $this->public_key);
-                break;
-            case 2:
-                $this->encoder = new RealestateCoNz_Api_Encoder_Version2($this->private_key, $this->public_key);
-                break;
-            default:
-                throw new Exception('Api version not supported: ' . $version);
+        if(!isset($this->encoder)) {
+            switch($this->version) {
+                case 1:
+                    $this->encoder = new RealestateCoNz_Api_Encoder_Version1($this->private_key, $this->public_key);
+                    break;
+                default:
+                    throw new Exception('Api version not supported: ' . $version);
+            }
         }
         
         return $this->encoder;
@@ -280,9 +289,12 @@ class RealestateCoNz_Api_Client
         $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
 
         $query_params = array(
-            'api_key' => $this->public_key,
-            'api_sig' => $api_signature
+            'api_key' => $this->public_key
         );
+        
+        if($api_signature) {
+            $query_params['api_sig'] = $api_signature;
+        }
         
         if (is_array($method->getQueryParams()) && count($method->getQueryParams())) {
             $query_params = array_merge($query_params, $method->getQueryParams());
