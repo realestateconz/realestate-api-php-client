@@ -189,7 +189,7 @@ class RealestateCoNz_Api_Client
                     $this->encoder = new RealestateCoNz_Api_Encoder_Version1($this->private_key, $this->public_key);
                     break;
                 default:
-                    throw new Exception('Api version not supported: ' . $version);
+                    throw new Exception('Api version not supported: ' . $this->version);
             }
         }
         
