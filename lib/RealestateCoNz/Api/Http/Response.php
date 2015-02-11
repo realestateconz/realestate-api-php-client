@@ -230,7 +230,10 @@ class RealestateCoNz_Api_Http_Response
             }
             $match = array();
             if(preg_match('#([^:]+): ?(.+)#m', $line, $match) ) {
-                $match[1] = preg_replace('/(?<=^|[\x09\x20\x2D])./e', 'strtoupper("\0")', strtolower(trim($match[1])));
+                $match[1] = preg_replace_callback('/(?<=^|[\x09\x20\x2D])./',
+                        function ($m) {
+                            return strtoupper($m[0]);
+                        }, strtolower(trim($match[1])));
                 if(isset($headersVal[$match[1]]) ) {
                     $headers[$match[1]] = array($headers[$match[1]], $match[2]);
                 } else {
