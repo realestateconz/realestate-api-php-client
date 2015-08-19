@@ -42,6 +42,17 @@ class RealestateCoNz_Api_Method_Agent_Put extends RealestateCoNz_Api_Method
      * @var string
      */
     protected $http_enc_type = 'application/json';
+    
+    /**
+     * NOTE:    Stopping CURL from sending an extra header(Expect: 100-continue) on the bigger posts.
+     *          This extra header makes the response come back with an extra header(HTTP/1.1 100 Continue)
+     *          and that causes an error on parsing the response(splitting it into header and body)
+     * TODO:    Move this into the api client(RealestateCoNz_Api_Client) later if we have the same issue with other calls
+     * @var array
+     */
+    protected $http_headers = array(
+        'Expect:'
+    );    
         
     /**
      *
