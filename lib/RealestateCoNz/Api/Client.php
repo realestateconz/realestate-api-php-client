@@ -186,6 +186,7 @@ class RealestateCoNz_Api_Client
         if(!isset($this->encoder)) {
             switch($this->version) {
                 case 1:
+                case 2.0:
                     $this->encoder = new RealestateCoNz_Api_Encoder_Version1($this->private_key, $this->public_key);
                     break;
                 default:
@@ -233,7 +234,7 @@ class RealestateCoNz_Api_Client
     public function sendRequest(RealestateCoNz_Api_Method $method)
     {
         $this->getHttpAdapter()->connect($this->server, 80);
-        
+
         // prepare body
         $body = null;
         if($method->getHttpMethod() === 'POST' || $method->getHttpMethod() === 'PUT') {            
@@ -267,7 +268,7 @@ class RealestateCoNz_Api_Client
         $this->last_request = $this->getHttpAdapter()->write($method->getHttpMethod(), $this->buildRequestUrl($method), $headers, $body);
 
         $this->last_response = $this->getHttpAdapter()->read();
-        
+
         return $method->parseResponse($this->last_response, $this);
     }
     
