@@ -286,7 +286,7 @@ class RealestateCoNz_Api_Client
         $api_signature = $this->createSignature($method->getUrl(), $method->getQueryParams(), $method->getPostParams(), $method->getRawData(), $method->getHttpAuthConcat());
 
         // build the url
-        $url = 'http://' . $this->server . '/' . $this->version . $method->getUrl();
+        $url = 'https://' . $this->server . '/' . $this->version . $method->getUrl();
 
         $query_params = array(
             'api_key' => $this->public_key
